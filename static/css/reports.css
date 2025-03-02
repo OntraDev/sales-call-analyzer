@@ -595,3 +595,128 @@
         grid-template-columns: 1fr;
     }
 }
+/* Tab container */
+.tab-container {
+    margin-top: 30px;
+}
+
+/* Tab navigation */
+.tab-nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 25px;
+    margin: 0 5px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--secondary-text);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    color: var(--primary-text);
+}
+
+.tab-btn.active {
+    color: var(--focus-color);
+    border-bottom: 3px solid var(--focus-color);
+    font-weight: 600;
+}
+
+/* Tab content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Objection specific styles */
+.wide-card {
+    grid-column: span 2;
+    width: 100%;
+}
+
+.objection-bar {
+    background-color: #FF9800; /* Orange for objections */
+}
+
+.objection-recommendations {
+    margin-top: 30px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.objection-recommendations h4 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.objection-tips {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.objection-tip-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid #FF9800;
+}
+
+.objection-tip-card h5 {
+    color: var(--focus-color);
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.tip-content p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--secondary-text);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .tab-nav {
+        flex-direction: column;
+        align-items: center;
+        border-bottom: none;
+    }
+    
+    .tab-btn {
+        width: 100%;
+        margin-bottom: 5px;
+        border-bottom: none;
+        border-left: 3px solid transparent;
+        text-align: center;
+    }
+    
+    .tab-btn.active {
+        border-bottom: none;
+        border-left: 3px solid var(--focus-color);
+        background-color: rgba(52, 152, 219, 0.1);
+    }
+    
+    .objection-tips {
+        grid-template-columns: 1fr;
+    }
+}

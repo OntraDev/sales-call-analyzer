@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Call Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sales Call Analyzer</h1>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+                    <li><a href="{{ url_for('history') }}">History</a></li>
+                    <li><a href="{{ url_for('reports') }}">Reports</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <main>
+            <div class="upload-section">
+                <h2>Select an audio file (MP3, WAV, M4A, etc.):</h2>
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div class="file-input-container">
+                        <input type="file" id="audio-file" name="file" accept="audio/*">
+                        <label for="audio-file" class="custom-file-upload">
+                            <span id="file-name">No file chosen</span>
+                            <span class="browse-button">Browse</span>
+                        </label>
+                    </div>
+                    <button type="submit" id="analyze-button">Transcribe & Analyze</button>
+                </form>
+            </div>
+            
+            <div id="loading" class="hidden">
+                <div class="spinner"></div>
+                <p>Processing your audio file. This may take a minute...</p>
+            </div>
+            
+            <div id="results" class="hidden">
+                <div class="result-section">
+                    <h2>Transcript:</h2>
+                    <div id="transcript" class="result-content"></div>
+                </div>
+                
+                <div class="result-section">
+                    <h2>Sales Coach Feedback:</h2>
+                    <div id="feedback" class="result-content"></div>
+                </div>
+                
+                <div class="result-summary">
+                    <div class="result-column">
+                        <h2>Key Strengths:</h2>
+                        <ul id="strengths-list"></ul>
+                    </div>
+                    <div class="result-column">
+                        <h2>Areas for Improvement:</h2>
+                        <ul id="weaknesses-list"></ul>
+                    </div>
+                </div>
+                
+                <div class="result-rating">
+                    <h2>Overall Rating:</h2>
+                    <div class="rating-display">
+                        <div id="rating-value">0</div>
+                        <div class="rating-scale">/10</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Powered by OpenAI's Whisper and GPT-4o</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
