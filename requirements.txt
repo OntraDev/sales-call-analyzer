@@ -1,0 +1,6 @@
+flask==2.1.0
+python-dotenv==0.20.0
+openai==0.28.1
+gunicorn==20.1.0
+werkzeug==2.0.3
+# sqlite3 is a built-in Python library and doesn't need to be installed via pip

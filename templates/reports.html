@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Performance Reports - Sales Call Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sales Performance Reports</h1>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('history') }}">History</a></li>
+                    <li><a href="{{ url_for('reports') }}" class="active">Reports</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <main>
+            <div class="reports-section">
+                <div class="report-header">
+                    <h2>Sales Team Performance Summary</h2>
+                    <div class="stats-summary">
+                        <div class="stat-card">
+                            <span class="stat-number">{{ total_calls }}</span>
+                            <span class="stat-label">Total Calls Analyzed</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab Navigation -->
+                <div class="tab-container">
+                    <div class="tab-nav">
+                        <button class="tab-btn active" data-tab="performance">Performance Metrics</button>
+                        <button class="tab-btn" data-tab="objections">Objection Analysis</button>
+                    </div>
+                    
+                    <!-- Performance Metrics Tab -->
+                    <div class="tab-content active" id="performance-tab">
+                    {% if total_calls > 0 %}
+                        <div class="report-grid">
+                            <div class="report-card">
+                                <h3>Top Strengths</h3>
+                                <p class="card-description">Most common strengths identified across all analyzed calls</p>
+                                
+                                {% if top_strengths %}
+                                    <div class="bar-chart">
+                                        {% for strength, count in top_strengths %}
+                                            <div class="chart-item">
+                                                <div class="chart-label">{{ strength }}</div>
+                                                <div class="chart-bar strength-bar" style="width: {{ (count / total_calls * 100)|round(0) }}%;">
+                                                    <span class="bar-value">{{ count }}</span>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="chart-footer">
+                                        <p class="chart-note">Numbers indicate frequency across {{ total_calls }} calls</p>
+                                    </div>
+                                {% else %}
+                                    <p class="no-data">No strength data available yet</p>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="report-card">
+                                <h3>Areas for Improvement</h3>
+                                <p class="card-description">Most common weaknesses identified across all analyzed calls</p>
+                                
+                                {% if top_weaknesses %}
+                                    <div class="bar-chart">
+                                        {% for weakness, count in top_weaknesses %}
+                                            <div class="chart-item">
+                                                <div class="chart-label">{{ weakness }}</div>
+                                                <div class="chart-bar weakness-bar" style="width: {{ (count / total_calls * 100)|round(0) }}%;">
+                                                    <span class="bar-value">{{ count }}</span>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="chart-footer">
+                                        <p class="chart-note">Numbers indicate frequency across {{ total_calls }} calls</p>
+                                    </div>
+                                {% else %}
+                                    <p class="no-data">No weakness data available yet</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="improvement-strategy">
+                            <h3>Personalized Improvement Strategy</h3>
+                            <div class="strategy-content">
+                                {{ improvement_paragraph|safe }}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="no-data-message">
+                            <p>No call data available yet. <a href="{{ url_for('index') }}">Analyze your first call</a> to generate reports.</p>
+                        </div>
+                    {% endif %}
+                    </div>
+                    
+                    <!-- Objection Analysis Tab -->
+                    <div class="tab-content" id="objections-tab">
+                    {% if total_calls > 0 %}
+                        <div class="report-card wide-card">
+                            <h3>Customer Objection Analysis</h3>
+                            <p class="card-description">Common objections encountered during sales calls</p>
+                            
+                            {% if objection_trends %}
+                                <div class="bar-chart">
+                                    {% for objection, count in objection_trends %}
+                                        {% if count > 0 %}
+                                        <div class="chart-item">
+                                            <div class="chart-label">{{ objection }}</div>
+                                            <div class="chart-bar objection-bar" style="width: {{ (count / total_calls * 100)|round(0) }}%;">
+                                                <span class="bar-value">{{ count }}</span>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="chart-footer">
+                                    <p class="chart-note">Numbers indicate frequency across {{ total_calls }} calls</p>
+                                </div>
+                                
+                                <div class="objection-recommendations">
+                                    <h4>Top Objection Handling Recommendations</h4>
+                                    <div class="objection-tips">
+                                        {% for objection, count in objection_trends[:3] %}
+                                            {% if count > 0 %}
+                                                <div class="objection-tip-card">
+                                                    <h5>{{ objection }}</h5>
+                                                    <div class="tip-content">
+                                                        {% if objection == "Price/budget concerns" %}
+                                                            <p>Focus on value over price. Quantify ROI when possible and consider offering flexible payment terms or tiered pricing options.</p>
+                                                        {% elif objection == "Need more time to decide" %}
+                                                            <p>Create a sense of urgency by highlighting time-sensitive benefits. Suggest a smaller initial commitment or offer a risk-free trial period.</p>
+                                                        {% elif objection == "Need to consult others" %}
+                                                            <p>Proactively ask about decision-making process early. Provide clear materials they can share with stakeholders and offer to join calls with other decision makers.</p>
+                                                        {% elif objection == "Already using a competitor" %}
+                                                            <p>Focus on unique differentiators. Ask about current pain points and tailor your solution to address specific issues they're experiencing.</p>
+                                                        {% elif objection == "No perceived need/value" %}
+                                                            <p>Ask better discovery questions to uncover actual pain points. Use case studies from similar clients and provide concrete examples of benefits.</p>
+                                                        {% elif objection == "Past negative experience" %}
+                                                            <p>Acknowledge concerns without criticizing competitors. Highlight your support process and customer success stories with quantifiable results.</p>
+                                                        {% elif objection == "Implementation concerns" %}
+                                                            <p>Outline your clear implementation process. Provide a detailed timeline and introduce customer success team members early in the sales process.</p>
+                                                        {% elif objection == "Contract/terms issues" %}
+                                                            <p>Offer a contract review session with clear explanations. Be open to reasonable modifications and prepare a simplified summary of key terms.</p>
+                                                        {% else %}
+                                                            <p>Prepare a comprehensive objection handling guide. Practice active listening techniques and clarify concerns before responding.</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <p class="no-data">No objection data available yet</p>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="no-data-message">
+                            <p>No call data available yet. <a href="{{ url_for('index') }}">Analyze your first call</a> to generate reports.</p>
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Powered by OpenAI's Whisper and GPT-4o</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to current tab
+                    btn.classList.add('active');
+                    const tabId = btn.getAttribute('data-tab');
+                    document.getElementById(tabId + '-tab').classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

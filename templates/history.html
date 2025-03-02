@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Call History - Sales Call Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sales Call History</h1>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('history') }}" class="active">History</a></li>
+                    <li><a href="{{ url_for('reports') }}">Reports</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <main>
+            <div class="history-section">
+                <h2>Previous Analyzed Calls</h2>
+                
+                {% if calls %}
+                    <div class="call-list">
+                        {% for call in calls %}
+                            <div class="call-card">
+                                <div class="call-header">
+                                    <h3>{{ call['filename'] }}</h3>
+                                    <span class="call-date">{{ call['date_analyzed'] }}</span>
+                                    <span class="call-rating">Rating: {{ call['overall_rating'] }}/10</span>
+                                </div>
+                                
+                                <div class="call-details">
+                                    <div class="accordion">
+                                        <div class="accordion-header">Transcript</div>
+                                        <div class="accordion-content">
+                                            <p>{{ call['transcript'] }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="accordion">
+                                        <div class="accordion-header">Feedback</div>
+                                        <div class="accordion-content">
+                                            <p>{{ call['feedback'] }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="call-summary">
+                                        <div class="strengths">
+                                            <h4>Strengths</h4>
+                                            <ul>
+                                                {% if call['strengths'] %}
+                                                    {% set strengths_list = call['strengths']|fromjson %}
+                                                    {% for strength in strengths_list %}
+                                                        <li>{{ strength }}</li>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <li>No strengths recorded</li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                        
+                                        <div class="weaknesses">
+                                            <h4>Areas for Improvement</h4>
+                                            <ul>
+                                                {% if call['weaknesses'] %}
+                                                    {% set weaknesses_list = call['weaknesses']|fromjson %}
+                                                    {% for weakness in weaknesses_list %}
+                                                        <li>{{ weakness }}</li>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <li>No weaknesses recorded</li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="no-calls">No calls have been analyzed yet. <a href="{{ url_for('index') }}">Analyze your first call</a>.</p>
+                {% endif %}
+            </div>
+        </main>
+        
+        <footer>
+            <p>Powered by OpenAI's Whisper and GPT-4o</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Toggle accordion sections
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    header.classList.toggle('active');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
