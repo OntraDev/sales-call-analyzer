@@ -24,3 +24,4 @@ sales_calls.db
 # OS specific files
 .DS_Store
 Thumbs.db
+.env
